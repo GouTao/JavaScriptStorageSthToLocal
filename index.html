@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+		<title></title>
+		<link rel="stylesheet" href="bootstrap-3.3.4/css/bootstrap.min.css" />
+		<style>
+			.header{
+				background-color: darkseagreen;
+			}
+			.header h3{
+				color: white;
+				margin: 0;
+				padding: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<h3>Welcome to this APP!</h3>
+		</div>
+		<div class="content">
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-3">
+					<form role="form" style="margin: 20px;padding: 10px;border: 1px solid #CCCCCC;border-radius: 10px;" id="loginForm" style="display: none;">
+						<p><b><i>Login information</i></b></p>
+						<hr style="margin: 5px 0;"/>
+						<div class="form-group">
+							<label >userName</label>
+							<input type="text" class="form-control" id="userName" placeholder="Enter your username..."/>
+						</div>
+						<div class="form-group">
+							<label >passWord</label>
+							<input type="password" class="form-control" id="passWord" placeholder="Enter your password..."/>
+						</div>
+						<div style="text-align: center;">
+							<button class="btn btn-success" id="subBtn">Please remember me</button>
+							<button class="btn btn-danger" id="delBtn">Don't remenber me</button>
+						</div>
+						<div style="text-align: left;" id="LSChange"></div>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="bootstrap-3.3.4/jquery.min.js" ></script><br />
+		<script type="text/javascript" src="js/cookies.js" ></script>
+		<script type="text/javascript" src="js/session.js" ></script>
+		<script type="text/javascript" src="js/localStorage.js" ></script>
+		<script>
+			$(document).ready(function(){
+				//cookies存在
+				if($.Cookies.hasCookies()){
+					$("#loginForm").show();
+					$("#userName").val($.Cookies.getCookies("userName"));
+					$("#passWord").val($.Cookies.getCookies("passWord"));
+					
+					//session
+					if($.Session.isSurpport()){
+			   			$.Session.setSession("PW",$.Cookies.getCookies("userName")+$.Cookies.getCookies("passWord")+parseInt(Math.random()*100));
+			   			if($.Session.getSession("visit")==""){
+			   				$.Session.setSession("visit",1);
+			   			}
+			   			else{
+			   				var visit=Number($.Session.getSession("visit"))+1;
+			   				$.Session.setSession("visit",visit);
+			   			}
+			   			//$.Session.deleteSession("PW")
+			   		}
+			   		else{
+			   			alert("您的浏览器需要升级了！")
+			   		}
+			   		
+			   		//localStorage
+			   		if($.LocalStorage.isSurpport()){
+			   			console.log("a")
+			   			$.LocalStorage.setLocalStorage("PW",$.Cookies.getCookies("userName")+$.Cookies.getCookies("passWord")+parseInt(Math.random()*100));
+			   			if($.LocalStorage.getLocalStorage("visit")==""){
+			   				$.LocalStorage.setLocalStorage("visit",1);
+			   			}
+			   			else{
+			   				var visit=Number($.LocalStorage.getLocalStorage("visit"))+1;
+			   				$.LocalStorage.setLocalStorage("visit",visit);
+			   			}
+			   			$.LocalStorage.localStorageChange(function(e){
+			   				$("#LSChange").html("\n"+$("#LSChange").html()+e.key+" CHANGED FROM "+e.oldValue+" TO "+e.newValue+" IN LOCALSTORAGE "+e.storageArea)
+			   			})
+			   		}
+			   		else{
+			   			alert("您的浏览器需要升级了！")
+			   		}
+			   		
+				}
+				//cookies不存在
+				else{
+					var name=prompt("Enter your nickname");
+					if (name!="" && name!=null){
+				   		$.Cookies.setCookies("nickName",name,1);
+				   		$("#loginForm").show();
+				    }
+					else{
+						alert("Error:No nickname entered");
+					}
+					
+				}
+				
+				$("#subBtn").on("click",function(){
+					$.Cookies.setCookies("userName",$("#userName").val(),1);
+					$.Cookies.setCookies("passWord",$("#passWord").val(),1);
+				})
+				
+				$("#delBtn").on('click',function(){
+					$.Cookies.deleteCookies();
+					$.Session.deleteSession();
+					$.LocalStorage.deleteLocalStorage();
+				})
+			})
+		</script>
+	</body>
+</html>
