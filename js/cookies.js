@@ -24,15 +24,18 @@
 			
 		};
 		cookies.getCookies=function(cookieName){
-			var name=cookieName+"=";
-			var cArr=cookiesArr();
-			for(var i=0;i<cArr.length;i++){
-				var c=cArr[i].trim();
-				if(c.indexOf(name)==0){
-					return c.substring(name.length,c.length);
+			if(cookieName == null || cookieName == undefined){
+				return cookiesArr();
+			}else{
+				var name=cookieName+"=";
+				var cArr=cookiesArr();
+				for(var i=0;i<cArr.length;i++){
+					var c=cArr[i].trim();
+					if(c.indexOf(name)==0){
+						return c.substring(name.length,c.length);
+					}
 				}
 			}
-			return "";
 		};
 		cookies.deleteCookies=function(cookieName){
 			if(cookieName==null){
